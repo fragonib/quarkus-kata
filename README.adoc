@@ -1,0 +1,44 @@
+== Context
+
+A new type of energy meter provides readings from building power lines, and we need to incorporate the data they provide to the system.
+
+These devices incorporate a SIM card, open to the Internet, so they can create HTTP requests to send the data.
+They sync their time with any time service so they always have the correct date.
+Also, each device has a unique serial number, so they can send that serial number (sn) along the messages so the readings can be identified.
+
+The devices send an energy reading (as a home energy meter, a value that always grows) to the server every 30 minutes, with a JSON payload with the following structure:
+
+[source,json]
+----
+{
+"timestamp": Timestamp,
+"device_sn": String,
+"energy": Number
+}
+----
+
+We need to create a small service that does the following:
+
+1) Receives incoming sensor data via HTTP PUT.
+2) Computes average power values from energy readings (assume a flawless stream of readings, so power can safely be computed over the device reporting frequency).
+3) Stores the datapoints (records with at least a timestamp, energy and power values).
+4) Has an endpoint to get a list of data points from the service, filtered by timestamps and the data source (GET /api/v1/data-points?start=***&amp;end=***&amp;device-id=*** for example, you can use anything you want).
+
+== Requirements
+
+WHAT NEEDS TO BE DONE:
+
+. Implement a basic service providing the aforementioned functionalities.
+. Just put some comments about the following questions:
+.. Imagine that a second vendor is publishing data of the same nature (i.e., containing a timestamp, energy values and some type of ID, but perhaps with a different structure)
+... What strategy would you follow to accept this new format
+... Potentially, each vendor will send data in a different way.
+How could we design the service/system so that we can include a new schema easily and with little or no downtime when adding it?
+.. In case we would like to stream the processed data via Kafka, what would be a nice strategy to follow?
+(Serialisation, message structure…)
+
+== NOTES
+
+- You can create a service using any framework you want, and any database, embedded database or in memory data structure for storing data.
+- You can make any assumptions you need to achieve this.
+- We can think about basic auth, so we can add credentials for a certain group of sensors, but there is no need to enforce it in this test, just assume that the gateway already performed all the checks and TLS termination.
