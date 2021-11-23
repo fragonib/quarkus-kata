@@ -19,10 +19,10 @@ The devices send an energy reading (as a home energy meter, a value that always 
 
 We need to create a small service that does the following:
 
-1) Receives incoming sensor data via HTTP PUT.
-2) Computes average power values from energy readings (assume a flawless stream of readings, so power can safely be computed over the device reporting frequency).
-3) Stores the datapoints (records with at least a timestamp, energy and power values).
-4) Has an endpoint to get a list of data points from the service, filtered by timestamps and the data source (GET /api/v1/data-points?start=***&amp;end=***&amp;device-id=*** for example, you can use anything you want).
+. Receives incoming sensor data via HTTP PUT.
+. Computes average power values from energy readings (assume a flawless stream of readings, so power can safely be computed over the device reporting frequency).
+. Stores the datapoints (records with at least a timestamp, energy and power values).
+. Has an endpoint to get a list of data points from the service, filtered by timestamps and the data source (`GET /api/v1/data-points?start=xxx&end=xxx&device-id=xxx` for example, you can use anything you want).
 
 == Requirements
 
