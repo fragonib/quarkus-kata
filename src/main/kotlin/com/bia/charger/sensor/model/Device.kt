@@ -2,18 +2,24 @@ package com.bia.charger.sensor.model
 
 import java.util.*
 
+
 typealias DeviceSN = String
 
 class Device(
   val serialNumber: DeviceSN,
-  val sensorReadings: MutableList<ReadingId> = mutableListOf()
+  val sensorReadings: Stack<ReadingId> = Stack()
 ) {
 
+  /**
+   * Fresh new device without readings
+   */
+  constructor(deviceSN: DeviceSN) : this(serialNumber = deviceSN)
+
   fun mostRecentReading(): Optional<ReadingId> =
-    sensorReadings.stream().findFirst()
+    if (sensorReadings.empty()) Optional.empty() else Optional.of(sensorReadings.peek())
 
   fun addReading(id: ReadingId): Device {
-    sensorReadings.add(id)
+    sensorReadings.push(id)
     return this
   }
 

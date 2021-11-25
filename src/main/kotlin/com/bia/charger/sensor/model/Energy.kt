@@ -16,6 +16,7 @@ data class DeviceEnergyReport(
 )
 
 data class EnergyReading(
+  val id: ReadingId? = null,
   val timestamp: OffsetDateTime,
   val energyCounter: Number,
   val power: Power,
@@ -23,7 +24,7 @@ data class EnergyReading(
 ) {
 
   companion object {
-    fun first(deviceId: DeviceSN): EnergyReading {
+    fun fallbackReading(deviceId: DeviceSN): EnergyReading {
       return EnergyReading(
         timestamp = OffsetDateTime.now(),
         energyCounter = 0L,
