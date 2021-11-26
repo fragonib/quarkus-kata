@@ -29,8 +29,9 @@ dependencies {
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
 
   testImplementation("io.quarkus:quarkus-junit5")
-  testImplementation("org.assertj:assertj-core")
+  testImplementation("io.quarkus:quarkus-junit5-mockito")
   testImplementation("io.rest-assured:rest-assured")
+  testImplementation("org.assertj:assertj-core")
 }
 
 group = "com.bia"
