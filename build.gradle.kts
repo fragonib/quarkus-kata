@@ -12,26 +12,27 @@ repositories {
 val quarkusPlatformGroupId: String by project
 val quarkusPlatformArtifactId: String by project
 val quarkusPlatformVersion: String by project
+val jacksonVersion: String by project
+val kotlinMockitoVersion: String by project
 
 dependencies {
 
   implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
   implementation("io.quarkus:quarkus-kotlin")
-  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
   implementation("io.quarkus:quarkus-arc")
-  implementation("io.quarkus:quarkus-resteasy")
-  implementation("io.quarkus:quarkus-resteasy-jackson")
-  implementation("io.quarkus:quarkus-hibernate-orm-panache-kotlin")
+  implementation("io.quarkus:quarkus-resteasy-reactive")
+  implementation("io.quarkus:quarkus-resteasy-reactive-jackson")
   implementation("io.quarkus:quarkus-mongodb-panache-kotlin")
 
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
-  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
+  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
   testImplementation("io.quarkus:quarkus-junit5")
   testImplementation("io.quarkus:quarkus-junit5-mockito")
   testImplementation("io.rest-assured:rest-assured")
   testImplementation("org.assertj:assertj-core")
+  testImplementation("org.mockito.kotlin:mockito-kotlin:$kotlinMockitoVersion")
 }
 
 group = "com.bia"
