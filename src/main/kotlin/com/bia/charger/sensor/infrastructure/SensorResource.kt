@@ -2,6 +2,7 @@ package com.bia.charger.sensor.infrastructure
 
 import com.bia.charger.sensor.application.ReportEnergyReadingUseCase
 import com.bia.charger.sensor.model.DeviceEnergyReport
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.smallrye.mutiny.Uni
 import org.eclipse.microprofile.openapi.annotations.Operation
 import org.eclipse.microprofile.openapi.annotations.tags.Tag
@@ -21,28 +22,34 @@ class ReportEnergyResource {
   private val log = Logger.getLogger(ReportEnergyReadingUseCase::class.java)
 
   @Inject
-  private lateinit var useCase: ReportEnergyReadingUseCase
+  lateinit var useCase: ReportEnergyReadingUseCase
 
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
-  suspend fun reportEnergyReading(reportData: EnergyReadingReport, @Context uriInfo: UriInfo): Response {
-    val dataPoint = useCase.report(
-      DeviceEnergyReport(
-        device = Device(reportData.device_sn),
-        timestamp = reportData.timestamp,
-        energyCounter = reportData.energy
+  @Operation(summary = "Receives & registers particular sensor report", )
+  fun reportEnergyReading(sensorReport: ParticularSensorReport, @Context uriInfo: UriInfo): Uni<Response> {
+    log.info("Received particular sensor report: $sensorReport")
+    return useCase
+      .reportEnergyReading(
+        DeviceEnergyReport(
+          deviceSn = sensorReport.deviceSN,
+          timestamp = sensorReport.timestamp,
+          energyCounter = sensorReport.energy
+        )
       )
-    )
-
-    val uriBuilder: UriBuilder = uriInfo.absolutePathBuilder
-    uriBuilder.path(dataPoint.id.toString())
-    return Response.created(uriBuilder.build()).build()
+      .map { registeredReading ->
+        val uriBuilder = uriInfo.absolutePathBuilder
+        Response
+          .created(uriBuilder.path(registeredReading.id.toString()).build())
+          .entity(registeredReading)
+          .build()
+      }
   }
 
 }
 
-data class EnergyReadingReport(
-  val timestamp: OffsetDateTime,
-  val device_sn: String,
-  val energy: Long
+data class ParticularSensorReport(
+  @JsonProperty(required = true, value = "device_sn") val deviceSN: String,
+  @JsonProperty(required = true) val timestamp: OffsetDateTime,
+  @JsonProperty(required = true) val energy: Long
 )
