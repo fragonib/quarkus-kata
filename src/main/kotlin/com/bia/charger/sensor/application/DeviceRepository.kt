@@ -33,4 +33,13 @@ interface DeviceRepository {
    */
   fun createNew(deviceSN: DeviceSN): Uni<Device>
 
+  /**
+   * Updates an existing device (identified by its sn) with new energy reading data
+   *
+   * @param device Device new energy reading data
+   *
+   * @return Updated device data
+   */
+  fun update(device: Device): Uni<Device>
+
 }

@@ -7,10 +7,9 @@ import com.bia.charger.sensor.model.Power
 import com.bia.charger.sensor.model.ReadingId
 import com.bia.charger.shared.notNull
 import io.quarkus.mongodb.panache.common.MongoEntity
-import io.quarkus.mongodb.panache.kotlin.PanacheMongoEntity
 import io.quarkus.mongodb.panache.kotlin.reactive.ReactivePanacheMongoRepositoryBase
 import io.smallrye.mutiny.Uni
-import org.bson.types.ObjectId
+import org.bson.codecs.pojo.annotations.BsonId
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
@@ -20,10 +19,10 @@ import javax.enterprise.context.ApplicationScoped
 
 @ApplicationScoped
 class MongoEnergyReadingsRepository
-  : ReactivePanacheMongoRepositoryBase<MongoEnergyReading, ReadingId>, EnergyReadingsRepository {
+  : ReactivePanacheMongoRepositoryBase<MongoEnergyReading, String>, EnergyReadingsRepository {
 
   override fun retrieve(readingId: ReadingId): Uni<EnergyReading> =
-    findById(readingId).notNull()
+    findById(readingId.toString()).notNull()
       .map { it.toModel() }
 
   override fun createNew(energyReading: EnergyReading): Uni<EnergyReading> =
@@ -35,32 +34,33 @@ class MongoEnergyReadingsRepository
 
 @MongoEntity(collection = "readings")
 data class MongoEnergyReading(
-  val timestamp: Date,
-  val energyCounter: Long,
-  val power: Long,
-  val deviceId: DeviceSN,
-) : PanacheMongoEntity() {
+  @field:BsonId
+  var id: String? = null,
+  var timestamp: Date? = null,
+  var energyCounter: Long? = null,
+  var power: Long? = null,
+  var deviceId: DeviceSN? = null,
+) {
 
   companion object {
     fun fromModel(reading: EnergyReading): MongoEnergyReading {
-      val mongoEnergyReading = MongoEnergyReading(
+      return MongoEnergyReading(
+        id = (reading.id ?: UUID.randomUUID()).toString(),
         timestamp = Date.from(reading.timestamp.toInstant()),
         energyCounter = reading.energyCounter.toLong(),
         power = reading.power.watts.toLong(),
         deviceId = reading.deviceId,
       )
-      mongoEnergyReading.id = reading.id?.let { ObjectId(it) }
-      return mongoEnergyReading
     }
   }
 
   fun toModel(): EnergyReading {
     return EnergyReading(
-      id = id.toString(),
-      timestamp = OffsetDateTime.from(timestamp.toInstant().atZone(ZoneOffset.UTC)),
-      energyCounter = energyCounter,
-      power = Power(power, ChronoUnit.MINUTES),
-      deviceId = deviceId,
+      id = UUID.fromString(id),
+      timestamp = OffsetDateTime.from(timestamp!!.toInstant().atZone(ZoneOffset.UTC)),
+      energyCounter = energyCounter!!,
+      power = Power(power!!, ChronoUnit.MINUTES),
+      deviceId = deviceId!!,
     )
   }
 }

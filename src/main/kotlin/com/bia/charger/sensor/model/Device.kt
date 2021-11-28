@@ -5,9 +5,9 @@ import java.util.*
 
 typealias DeviceSN = String
 
-class Device(
+data class Device(
   val serialNumber: DeviceSN,
-  val sensorReadings: Stack<ReadingId> = Stack()
+  private val sensorReadings: Stack<ReadingId> = Stack()
 ) {
 
   /**
@@ -15,11 +15,19 @@ class Device(
    */
   constructor(deviceSN: DeviceSN) : this(serialNumber = deviceSN)
 
+  fun allReadings(): List<ReadingId> =
+    sensorReadings.toList()
+
   fun mostRecentReading(): Optional<ReadingId> =
     if (sensorReadings.empty()) Optional.empty() else Optional.of(sensorReadings.peek())
 
   fun addReading(id: ReadingId): Device {
     sensorReadings.push(id)
+    return this
+  }
+
+  fun addAll(readings: List<ReadingId>): Device {
+    sensorReadings.addAll(readings)
     return this
   }
 
