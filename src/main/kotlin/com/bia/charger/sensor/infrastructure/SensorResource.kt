@@ -2,6 +2,7 @@ package com.bia.charger.sensor.infrastructure
 
 import com.bia.charger.sensor.application.ReportEnergyReadingUseCase
 import com.bia.charger.sensor.model.DeviceEnergyReport
+import com.bia.charger.sensor.model.UnacceptableReportException
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.smallrye.mutiny.Uni
 import org.eclipse.microprofile.openapi.annotations.Operation
@@ -12,7 +13,10 @@ import javax.inject.Inject
 import javax.ws.rs.Consumes
 import javax.ws.rs.PUT
 import javax.ws.rs.Path
-import javax.ws.rs.core.*
+import javax.ws.rs.core.Context
+import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.Response
+import javax.ws.rs.core.UriInfo
 
 
 @Path("/api/sensors")
@@ -42,6 +46,12 @@ class ReportEnergyResource {
         Response
           .created(uriBuilder.path(registeredReading.id.toString()).build())
           .entity(registeredReading)
+          .build()
+      }
+      .onFailure { it is UnacceptableReportException } .recoverWithItem { th ->
+        Response
+          .status(Response.Status.NOT_ACCEPTABLE)
+          .entity(mapOf("error" to th.message))
           .build()
       }
   }
