@@ -6,7 +6,6 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalUnit
 import java.util.*
-import kotlin.math.floor
 
 
 typealias ReadingId = UUID
@@ -51,11 +50,11 @@ data class EnergyReading(
       throw UnacceptableReportException("New energy report [${newReading.energyCounter}] is less than last reading [${this.energyCounter}]!!")
 
     val elapsedTime = ChronoUnit.MINUTES.between(this.timestamp, newReading.timestamp)
-    if (elapsedTime < 0)
+    if (elapsedTime <= 0)
       throw UnacceptableReportException("New time report [${newReading.timestamp}] is set before last reading [${this.timestamp}]!!")
 
     return Power(
-      watts = floor(energyDelivered.toDouble() / elapsedTime.toDouble()).toLong(),
+      watts = energyDelivered / elapsedTime,
       timeUnit = ChronoUnit.MINUTES
     )
   }
