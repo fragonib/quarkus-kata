@@ -11,7 +11,7 @@ class Device(
 ) {
 
   /**
-   * Fresh new device without readings
+   * Fresh new device without any readings yet
    */
   constructor(deviceSN: DeviceSN) : this(serialNumber = deviceSN)
 
