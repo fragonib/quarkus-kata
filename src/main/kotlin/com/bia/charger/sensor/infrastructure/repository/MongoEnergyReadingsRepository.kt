@@ -1,4 +1,4 @@
-package com.bia.charger.sensor.infrastructure
+package com.bia.charger.sensor.infrastructure.repository
 
 import com.bia.charger.sensor.application.EnergyReadingsRepository
 import com.bia.charger.sensor.model.DeviceSN

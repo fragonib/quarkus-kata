@@ -1,9 +1,8 @@
-package com.bia.charger.sensor.infrastructure
+package com.bia.charger.sensor.infrastructure.repository
 
 import com.bia.charger.sensor.model.EnergyReading
 import com.bia.charger.sensor.model.Power
 import io.quarkus.test.junit.QuarkusTest
-import io.smallrye.mutiny.helpers.test.UniAssertSubscriber
 import org.assertj.core.api.Assertions.assertThat
 import org.jboss.logging.Logger
 import org.junit.jupiter.api.Test

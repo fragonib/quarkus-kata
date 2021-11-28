@@ -1,4 +1,4 @@
-package com.bia.charger.sensor.infrastructure
+package com.bia.charger.sensor.infrastructure.delivery
 
 import com.bia.charger.sensor.application.ReportEnergyReadingUseCase
 import com.bia.charger.sensor.model.DeviceEnergyReport

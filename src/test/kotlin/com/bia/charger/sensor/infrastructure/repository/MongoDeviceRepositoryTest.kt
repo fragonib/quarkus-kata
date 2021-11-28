@@ -1,4 +1,4 @@
-package com.bia.charger.sensor.infrastructure
+package com.bia.charger.sensor.infrastructure.repository
 
 import com.bia.charger.sensor.model.Device
 import io.quarkus.test.junit.QuarkusTest
