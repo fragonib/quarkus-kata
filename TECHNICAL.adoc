@@ -1,0 +1,77 @@
+= Technical aspects
+
+== Technologies used
+
+* Gradle (for building project)
+* Kotlin (for production code)
+* Hexagonal architecture
+* Reactive modules
+
+== Focused on
+
+* Design patterns
+* SOLID
+* Event oriented design
+
+== Requirements
+
+. To have at least JVM 11 to build and run the project
+. GraalVM to build native app
+
+== Running
+
+To build the entire app with:
+
+[source,shell]
+----
+./gradlew clean build
+----
+
+To build the entire app but without running any tests:
+
+[source,shell]
+----
+./gradlew clean build -x test
+----
+
+To run all tests, external dependencies (ie: DB engines) are mocked:
+
+[source,shell]
+----
+./gradlew test
+----
+
+To run the entire app (in localhost) in PROD mode:
+
+[source,shell]
+----
+java -jar build/quarkus-app/quarkus-run.jar
+----
+
+
+[NOTE]
+====
+Requires a running mongo database cluster. You can play with local one:
+
+[source,shell]
+----
+docker run -ti --rm -p 27017:27017 mongo
+----
+====
+
+Once up &amp; running you can check and interact with the REST API using http://localhost:8080/swagger-ui.html[swagger UI]
+
+
+To run application in DEV mode:
+
+[source,shell]
+----
+./gradlew quarkusDev
+----
+
+In this mode you can interact with app http://localhost:8080/q/dev[dev insights]
+
+== KNOWN errors
+
+== What could be improved?
+
