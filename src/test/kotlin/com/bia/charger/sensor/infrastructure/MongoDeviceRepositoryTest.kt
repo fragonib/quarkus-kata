@@ -13,18 +13,29 @@ internal class MongoDeviceRepositoryTest {
   @Inject
   internal lateinit var repo: MongoDeviceRepository
 
-    @Test
-    fun retrieve() {
-      val sn = "myserialnumber"
-      val createNew = repo.createNew(sn)
+  @Test
+  fun `should create new device given its serial number`() {
 
-      createNew
-        .subscribe().withSubscriber(UniAssertSubscriber.create())
-        .assertCompleted().assertItem(
-          Device(
-            serialNumber = sn
-          )
-        )
-    }
+    // Given
+    val sn = "device-serial-number"
+
+    // When
+    val persistedDevice = repo.createNew(sn)
+
+    // Then
+    val expectedDevice = Device(serialNumber = sn)
+    persistedDevice
+      .subscribe().withSubscriber(UniAssertSubscriber.create())
+      .awaitItem()
+      .assertItem(expectedDevice)
+      .assertCompleted()
+
+    val registeredDevice = repo.retrieve(sn)
+    registeredDevice
+      .subscribe().withSubscriber(UniAssertSubscriber.create())
+      .awaitItem()
+      .assertItem(expectedDevice)
+      .assertCompleted()
+  }
 
 }

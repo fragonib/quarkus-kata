@@ -24,6 +24,7 @@ dependencies {
   implementation("io.quarkus:quarkus-resteasy-reactive-jackson")
   implementation("io.quarkus:quarkus-smallrye-openapi")
   implementation("io.quarkus:quarkus-mongodb-panache-kotlin")
+  implementation("io.quarkus:quarkus-liquibase-mongodb")
 
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
