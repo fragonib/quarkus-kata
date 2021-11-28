@@ -1,8 +1,11 @@
 package com.bia.charger.sensor.infrastructure
 
-import com.bia.charger.sensor.application.Device
-import com.bia.charger.sensor.application.DeviceEnergyReport
 import com.bia.charger.sensor.application.ReportEnergyReadingUseCase
+import com.bia.charger.sensor.model.DeviceEnergyReport
+import io.smallrye.mutiny.Uni
+import org.eclipse.microprofile.openapi.annotations.Operation
+import org.eclipse.microprofile.openapi.annotations.tags.Tag
+import org.jboss.logging.Logger
 import java.time.OffsetDateTime
 import javax.inject.Inject
 import javax.ws.rs.Consumes
@@ -11,8 +14,11 @@ import javax.ws.rs.Path
 import javax.ws.rs.core.*
 
 
-@Path("/api/v1/sensor")
+@Path("/api/sensors")
+@Tag(name = "sensors")
 class ReportEnergyResource {
+
+  private val log = Logger.getLogger(ReportEnergyReadingUseCase::class.java)
 
   @Inject
   private lateinit var useCase: ReportEnergyReadingUseCase

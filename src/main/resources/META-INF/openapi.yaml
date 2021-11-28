@@ -1,0 +1,21 @@
+openapi: 3.1.1
+info:
+  title: Charger Monitor API
+  description: Fruit resources Open API documentation
+  version: "1.0.0"
+  contact:
+    name: Charger Monitor Support
+    url: https://www.biapower.io
+    email: contact@biapower.io
+
+servers:
+  - url: http://localhost:8080/api
+    description: DEV server
+
+tags:
+  - name: sensors
+    description: APIs to deal with particular sensors
+  - name: readings
+    description: API to interact with energy readings
+
+components:

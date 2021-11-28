@@ -59,7 +59,7 @@ docker run -ti --rm -p 27017:27017 mongo
 ----
 ====
 
-Once up &amp; running you can check and interact with the REST API using http://localhost:8080/swagger-ui.html[swagger UI]
+Once up &amp; running you can check and interact with the REST API using http://localhost:8080/swagger-ui[swagger UI]
 
 
 To run application in DEV mode:
