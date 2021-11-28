@@ -1,23 +1,29 @@
 package com.bia.charger.sensor.application
 
-import java.time.OffsetDateTime
-import java.util.*
+import com.bia.charger.sensor.model.DeviceEnergyReport
+import com.bia.charger.sensor.model.EnergyReading
+import com.bia.charger.shared.notNull
+import com.bia.charger.shared.toUni
+import io.smallrye.mutiny.Uni
 import javax.enterprise.context.ApplicationScoped
 
+
 @ApplicationScoped
-class ReportEnergyReadingUseCase {
-  fun report(deviceEnergyReport: DeviceEnergyReport): DeviceEnergyReport {
-    return deviceEnergyReport
+class ReportEnergyReadingUseCase(
+  private val deviceRepository: DeviceRepository,
+  private val energyReadingsRepository: EnergyReadingsRepository
+) {
+
+  fun reportEnergyReading(energyReport: DeviceEnergyReport): Uni<EnergyReading> {
+    return deviceRepository.retrieveOrCreateNew(energyReport.deviceSn)
+      .flatMap { device ->
+        device.mostRecentReading().toUni().notNull()
+          .flatMap (energyReadingsRepository::retrieve )
+          .onFailure().recoverWithItem { _ -> EnergyReading.fallbackReading(energyReport.deviceSn) }
+          .map { mostRecentReading -> mostRecentReading.nextReading(energyReport) }
+          .flatMap (energyReadingsRepository::createNew )
+          .call { it -> deviceRepository.update(device.addReading(it.id!!)) }
+      }
   }
+
 }
-
-data class DeviceEnergyReport(
-  val id: UUID = UUID.randomUUID(),
-  val timestamp: OffsetDateTime,
-  val device: Device,
-  val energyCounter: Number,
-)
-
-data class Device(
-  val sn: String
-)

@@ -35,6 +35,7 @@ dependencies {
   testImplementation("io.rest-assured:rest-assured")
   testImplementation("org.assertj:assertj-core")
   testImplementation("org.mockito.kotlin:mockito-kotlin:$kotlinMockitoVersion")
+  testImplementation("org.mockito:mockito-junit-jupiter")
 }
 
 group = "com.bia"
