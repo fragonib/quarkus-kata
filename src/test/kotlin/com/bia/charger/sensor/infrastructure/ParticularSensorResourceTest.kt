@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 
 @QuarkusTest
-internal class SensorResourceTest {
+internal class ParticularSensorResourceTest {
 
   @Inject
   lateinit var mapper: ObjectMapper
@@ -39,7 +39,7 @@ internal class SensorResourceTest {
             timestamp = OffsetDateTime.now(),
             energyCounter = 5L,
             power = Power(10L, ChronoUnit.MINUTES),
-            deviceId = "DeviceSN",
+            deviceId = "dummy-sn",
           )
         )
       )

@@ -27,7 +27,7 @@ internal class ReportEnergyReadingUseCaseTest {
   fun `should generate next energy reading`() {
 
     // Given
-    val deviceSN = "dummy"
+    val deviceSN = "dummy-sn"
 
     val previousTimestamp = OffsetDateTime.now()
     val previousReadingId = UUID.randomUUID()
