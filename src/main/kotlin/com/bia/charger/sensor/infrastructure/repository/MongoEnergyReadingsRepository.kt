@@ -8,6 +8,8 @@ import com.bia.charger.sensor.model.ReadingId
 import com.bia.charger.shared.notNull
 import io.quarkus.mongodb.panache.common.MongoEntity
 import io.quarkus.mongodb.panache.kotlin.reactive.ReactivePanacheMongoRepositoryBase
+import io.quarkus.panache.common.Parameters
+import io.smallrye.mutiny.Multi
 import io.smallrye.mutiny.Uni
 import org.bson.codecs.pojo.annotations.BsonId
 import java.time.OffsetDateTime
@@ -28,6 +30,25 @@ class MongoEnergyReadingsRepository
   override fun createNew(energyReading: EnergyReading): Uni<EnergyReading> =
     persist(MongoEnergyReading.fromModel(energyReading))
       .map { it.toModel() }
+
+  override fun findBetween(
+    deviceSN: DeviceSN,
+    from: OffsetDateTime,
+    to: OffsetDateTime,
+  ): Multi<EnergyReading> {
+    val query = """
+      |{
+      |"timestamp": { ${'$'}gte: new ISODate(:from), ${'$'}lte: new ISODate(:to) },
+      |"deviceId": :deviceId
+      |}
+      |""".trimMargin()
+    return find(query, Parameters
+        .with("deviceId", deviceSN)
+        .and("to", to.toString())
+        .and("from", from.toString()))
+      .stream()
+      .map { it.toModel() }
+  }
 
 }
 
