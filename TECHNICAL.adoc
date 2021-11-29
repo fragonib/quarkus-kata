@@ -71,11 +71,46 @@ To run application in DEV mode:
 
 In this mode you can interact with app http://localhost:8080/q/dev[dev insights]
 
-== KNOWN errors
+== Containers
+
+You can build the container image by (make sure you build the app first `./gradlew clean build`)
+
+[source,shell]
+----
+docker build -f src/main/docker/Dockerfile.jvm -t quarkus/charger-monitor-jvm .
+----
+
+A running mongo database cluster is needed, but you can play with local one:
+
+[source,shell]
+----
+docker run -ti --rm -p 27017:27017 mongo
+----
+
+Then you can run the container local using:
+
+[source,shell]
+----
+docker run -i --net="host" --rm -p 8080:8080 quarkus/charger-monitor-jvm
+----
+
+[NOTE]
+====
+Image use `mongodb://mongodb:27017` hostname, so in local you need manually resolve that IP
+
+. /etc/hosts
+[source,shell]
+----
+127.0.0.1       mongodb
+----
+====
+
 
 == What could be improved?
 
+* Add support for native image
 * Authorization should be use on REST endpoints to warrant report are coming from trusted sensors
 * Aggregate instrumentation (ie.: OpenTracing) to trace complete journey of a message
 * Add business metrics with (ie.: Micrometer)
 
+== KNOWN errors
