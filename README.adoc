@@ -29,6 +29,10 @@ We need to create a small service that does the following:
 WHAT NEEDS TO BE DONE:
 
 . Implement a basic service providing the aforementioned functionalities.
+
++
+_Refer to the https://github.com/fragonib/charger-monitor/blob/master/TECHNICAL.adoc[technical document]_
+
 . Just put some comments about the following questions:
 .. Imagine that a second vendor is publishing data of the same nature (i.e., containing a timestamp, energy values and some type of ID, but perhaps with a different structure)
 ... What strategy would you follow to accept this new format
@@ -37,12 +41,11 @@ How could we design the service/system so that we can include a new schema easil
 .. In case we would like to stream the processed data via Kafka, what would be a nice strategy to follow?
 (Serialisation, message structure…)
 
++
+_Refer to the https://github.com/fragonib/charger-monitor/blob/master/Q&A.adoc[resolved questions]_
+
 == NOTES
 
 - You can create a service using any framework you want, and any database, embedded database or in memory data structure for storing data.
 - You can make any assumptions you need to achieve this.
 - We can think about basic auth, so we can add credentials for a certain group of sensors, but there is no need to enforce it in this test, just assume that the gateway already performed all the checks and TLS termination.
-
-== DESIGN
-
-Refer to the https://github.com/fragonib/charger-monitor/blob/master/TECHNICAL.adoc[technical document]

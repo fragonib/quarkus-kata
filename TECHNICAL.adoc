@@ -75,6 +75,7 @@ In this mode you can interact with app http://localhost:8080/q/dev[dev insights]
 
 == What could be improved?
 
+* Authorization should be use on REST endpoints to warrant report are coming from trusted sensors
 * Aggregate instrumentation (ie.: OpenTracing) to trace complete journey of a message
 * Add business metrics with (ie.: Micrometer)
 
