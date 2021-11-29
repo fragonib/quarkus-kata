@@ -42,3 +42,7 @@ How could we design the service/system so that we can include a new schema easil
 - You can create a service using any framework you want, and any database, embedded database or in memory data structure for storing data.
 - You can make any assumptions you need to achieve this.
 - We can think about basic auth, so we can add credentials for a certain group of sensors, but there is no need to enforce it in this test, just assume that the gateway already performed all the checks and TLS termination.
+
+== DESIGN
+
+Refer to the <<TECHNICAL.adoc, technical document>>
