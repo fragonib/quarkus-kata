@@ -45,4 +45,4 @@ How could we design the service/system so that we can include a new schema easil
 
 == DESIGN
 
-Refer to the [technical document](TECHNICAL.adoc)
+Refer to the https://github.com/fragonib/charger-monitor/blob/master/TECHNICAL.adoc[technical document]
