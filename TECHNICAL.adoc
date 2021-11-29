@@ -5,7 +5,8 @@
 * Gradle (for building project)
 * Kotlin (for production code)
 * Hexagonal architecture
-* Reactive modules
+* Reactive programming model (with non-blocking I/O)
+* Mongo for DB (although decoupled due to hexagonal architecture)
 
 == Focused on
 
@@ -73,4 +74,7 @@ In this mode you can interact with app http://localhost:8080/q/dev[dev insights]
 == KNOWN errors
 
 == What could be improved?
+
+* Aggregate instrumentation (ie.: OpenTracing) to trace complete journey of a message
+* Add business metrics with (ie.: Micrometer)
 
