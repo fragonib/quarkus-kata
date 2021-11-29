@@ -45,4 +45,4 @@ How could we design the service/system so that we can include a new schema easil
 
 == DESIGN
 
-Refer to the <<TECHNICAL.adoc, technical document>>
+Refer to the [technical document](TECHNICAL.adoc)
