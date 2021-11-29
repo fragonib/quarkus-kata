@@ -22,7 +22,7 @@ internal class MongoDeviceRepositoryTest {
     val sn = UUID.randomUUID().toString()
 
     // When
-    val persistedDevice = repo.createNew(sn)
+    repo.createNew(sn)
       .await().indefinitely()
 
     // Then

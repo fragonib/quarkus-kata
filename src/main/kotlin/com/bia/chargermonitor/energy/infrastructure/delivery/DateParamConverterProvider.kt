@@ -16,6 +16,7 @@ class DateParamConverterProvider : ParamConverterProvider {
   ): ParamConverter<T>? {
 
     if (rawType.name == "java.time.OffsetDateTime") {
+      @Suppress("UNCHECKED_CAST")
       return DateParamConverter() as ParamConverter<T>
     }
     return null

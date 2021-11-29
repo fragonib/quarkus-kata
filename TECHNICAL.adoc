@@ -105,12 +105,14 @@ Image use `mongodb://mongodb:27017` hostname, so in local you need manually reso
 ----
 ====
 
-
 == What could be improved?
 
 * Add support for native image
-* Authorization should be use on REST endpoints to warrant report are coming from trusted sensors
-* Aggregate instrumentation (ie.: OpenTracing) to trace complete journey of a message
-* Add business metrics with (ie.: Micrometer)
+* Authorization should be used on REST endpoints to guarantee energy reports are coming from trusted sensors
+* Aggregate instrumentation (ie.: _OpenTracing_) to trace complete journey of a message
+* Add business metrics (ie.: with _Micrometer_)
+* Use of https://github.com/lordofthejars/nosql-unit[NoSQLUnit] like framework to drive DB IT
 
 == KNOWN errors
+
+No known errors so far.
