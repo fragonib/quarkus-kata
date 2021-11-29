@@ -5,6 +5,7 @@ import io.smallrye.mutiny.Uni
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
@@ -22,6 +23,9 @@ internal class ReportEnergyReadingUseCaseTest {
 
   @Mock
   lateinit var energyReadingsRepository: EnergyReadingsRepository
+
+  @InjectMocks
+  lateinit var useCase: ReportEnergyReadingUseCase
 
   @Test
   fun `should generate next energy reading`() {
@@ -43,20 +47,20 @@ internal class ReportEnergyReadingUseCaseTest {
     val nextTimestamp = previousTimestamp.plusMinutes(10)
     val nextEnergyCounter = 1100L
     val nextReadingId = UUID.randomUUID()
-    setEnergyReadingsRepoBehaviour(previousEnergyReading, nextReadingId)
+    setEnergyReadingsRepoResponse(previousEnergyReading, nextReadingId)
 
     val device = Device(serialNumber = deviceSN).addReading(previousReadingId)
-    setDeviceRepoBehaviour(device)
+    setDeviceRepoResponse(device)
 
     // When
-    val useCase = ReportEnergyReadingUseCase(deviceRepository, energyReadingsRepository)
     val responseEnergyReading = useCase.reportEnergyReading(
       DeviceEnergyReport(
         deviceSn = deviceSN,
         timestamp = nextTimestamp,
         energyCounter = nextEnergyCounter
       )
-    ).await().indefinitely()
+    )
+      .await().indefinitely()
 
     // Then behaviour
     assertThat(responseEnergyReading).isEqualTo(
@@ -77,7 +81,7 @@ internal class ReportEnergyReadingUseCaseTest {
     verify(energyReadingsRepository, times(1)).createNew(any())
   }
 
-  private fun setDeviceRepoBehaviour(device: Device) {
+  private fun setDeviceRepoResponse(device: Device) {
     `when`(deviceRepository.retrieveOrCreateNew(any()))
       .thenReturn(Uni.createFrom().item(device))
 
@@ -85,7 +89,7 @@ internal class ReportEnergyReadingUseCaseTest {
       .then { Uni.createFrom().item(it.getArgument(0, Device::class.java)) }
   }
 
-  private fun setEnergyReadingsRepoBehaviour(
+  private fun setEnergyReadingsRepoResponse(
     previousEnergyReading: EnergyReading,
     nextReadingId: UUID?
   ): ReadingId {

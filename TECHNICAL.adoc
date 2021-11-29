@@ -48,7 +48,6 @@ To run the entire app (in localhost) in PROD mode:
 java -jar build/quarkus-app/quarkus-run.jar
 ----
 
-
 [NOTE]
 ====
 Requires a running mongo database cluster. You can play with local one:
