@@ -23,7 +23,7 @@ internal class EnergyReadingsResourceTest {
   lateinit var useCase: FindEnergyReadingUseCase
 
   @Test
-  fun `should return when no results`() {
+  fun `should return empty list when no results`() {
 
     // Given
     Mockito.`when`(useCase.findEnergyReadings(any(), any(), any()))
