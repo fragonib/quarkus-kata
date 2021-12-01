@@ -1,20 +1,20 @@
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <changeSet id="1" author="fragonib">
+  <changeSet id="1" author="fragonib">
 
-        <ext:createCollection collectionName="devices"/>
-        <ext:createCollection collectionName="readings"/>
+    <ext:createCollection collectionName="devices"/>
+    <ext:createCollection collectionName="readings"/>
 
-        <ext:createIndex collectionName="devices">
-            <ext:keys>{serialNumber: 1}</ext:keys>
-            <ext:options>{name: "sensorIdx"}</ext:options>
-        </ext:createIndex>
+    <ext:createIndex collectionName="readings">
+      <ext:keys>{deviceId: 1, timestamp: -1}</ext:keys>
+      <ext:options>{name: "readingsIdx"}</ext:options>
+    </ext:createIndex>
 
-    </changeSet>
+  </changeSet>
 
 </databaseChangeLog>
