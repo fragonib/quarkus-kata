@@ -70,7 +70,7 @@ internal class MongoEnergyReadingsRepositoryTest {
       .isNotNull
       .hasSize(2)
       .extracting<UUID> { ita: EnergyReading -> ita.id }
-      .containsExactly(readingIdA, readingIdB)
+      .containsExactly(readingIdB, readingIdA)
 
   }
 

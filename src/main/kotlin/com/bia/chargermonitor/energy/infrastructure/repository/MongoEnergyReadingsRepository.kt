@@ -9,6 +9,7 @@ import com.bia.chargermonitor.shared.notNull
 import io.quarkus.mongodb.panache.common.MongoEntity
 import io.quarkus.mongodb.panache.kotlin.reactive.ReactivePanacheMongoRepositoryBase
 import io.quarkus.panache.common.Parameters
+import io.quarkus.panache.common.Sort
 import io.smallrye.mutiny.Multi
 import io.smallrye.mutiny.Uni
 import org.bson.codecs.pojo.annotations.BsonId
@@ -42,10 +43,12 @@ class MongoEnergyReadingsRepository
       |"deviceId": :deviceId
       |}
       |""".trimMargin()
-    return find(query, Parameters
-        .with("deviceId", deviceSN)
-        .and("to", to.toString())
-        .and("from", from.toString()))
+    return find(query,
+        Sort.by("timestamp").descending(),
+        Parameters
+            .with("deviceId", deviceSN)
+            .and("to", to.toString())
+            .and("from", from.toString()))
       .stream()
       .map { it.toModel() }
   }
