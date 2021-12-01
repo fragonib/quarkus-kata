@@ -98,7 +98,7 @@ docker run -i --net="host" --rm -p 8080:8080 quarkus/charger-monitor-jvm
 ====
 Image use `mongodb://mongodb:27017` hostname, so in local you need manually resolve that IP
 
-. /etc/hosts
+./etc/hosts
 [source,shell]
 ----
 127.0.0.1       mongodb
