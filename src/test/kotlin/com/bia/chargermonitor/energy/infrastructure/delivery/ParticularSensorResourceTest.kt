@@ -3,6 +3,7 @@ package com.bia.chargermonitor.energy.infrastructure.delivery
 import com.bia.chargermonitor.energy.application.ReportEnergyReadingUseCase
 import com.bia.chargermonitor.energy.model.EnergyReading
 import com.bia.chargermonitor.energy.model.Power
+import com.bia.chargermonitor.energy.model.UnacceptableReportException
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.quarkus.test.junit.QuarkusTest
 import io.quarkus.test.junit.mockito.InjectMock
@@ -16,6 +17,8 @@ import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 import javax.inject.Inject
+import javax.ws.rs.core.Response
+import javax.ws.rs.core.Response.Status
 
 
 @QuarkusTest
@@ -28,9 +31,14 @@ internal class ParticularSensorResourceTest {
   lateinit var useCase: ReportEnergyReadingUseCase
 
   @Test
-  fun `charger sensor can report a reading`() {
+  fun `should respond OK with energy reading body when report is right`() {
 
     // Given
+    val coherentReport = ParticularSensorReport(
+      deviceSN = "34f8f749-0eb1-4edd-acfe-17b05c407917",
+      timestamp = OffsetDateTime.now(),
+      energy = 30L
+    )
     `when`(useCase.reportEnergyReading(any()))
       .thenReturn(
         Uni.createFrom().item(
@@ -46,23 +54,40 @@ internal class ParticularSensorResourceTest {
 
     // When
     given()
-      .body(
-        mapper.writeValueAsString(
-          ParticularSensorReport(
-            deviceSN = "34f8f749-0eb1-4edd-acfe-17b05c407917",
-            timestamp = OffsetDateTime.now(),
-            energy = 30L
-          )
-        )
-      )
+      .body(mapper.writeValueAsString(coherentReport))
       .contentType(ContentType.JSON)
       .`when`()
       .put("/api/sensors")
 
-      // Then
+    // Then
       .then()
       .log().everything()
       .statusCode(201)
+  }
+
+  @Test
+  fun `should respond NOT_ACCEPTABLE when report is wrong`() {
+
+    // Given
+    val incoherentSensorReport = ParticularSensorReport(
+      deviceSN = "34f8f749-0eb1-4edd-acfe-17b05c407917",
+      timestamp = OffsetDateTime.now(),
+      energy = 30L
+    )
+    `when`(useCase.reportEnergyReading(any()))
+      .thenReturn(Uni.createFrom().failure(UnacceptableReportException("Not coherent sensor report")))
+
+    // When
+    given()
+      .body(mapper.writeValueAsString(incoherentSensorReport))
+      .contentType(ContentType.JSON)
+      .`when`()
+      .put("/api/sensors")
+
+    // Then
+      .then()
+      .log().everything()
+      .statusCode(Status.NOT_ACCEPTABLE.statusCode)
   }
 
 }

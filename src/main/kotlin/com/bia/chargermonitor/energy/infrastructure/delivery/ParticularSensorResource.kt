@@ -2,9 +2,12 @@ package com.bia.chargermonitor.energy.infrastructure.delivery
 
 import com.bia.chargermonitor.energy.application.ReportEnergyReadingUseCase
 import com.bia.chargermonitor.energy.model.DeviceEnergyReport
+import com.bia.chargermonitor.energy.model.EnergyReading
 import com.bia.chargermonitor.energy.model.UnacceptableReportException
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.smallrye.mutiny.Uni
+import io.vertx.mutiny.core.eventbus.EventBus
+import io.vertx.mutiny.core.eventbus.Message
 import org.eclipse.microprofile.openapi.annotations.Operation
 import org.eclipse.microprofile.openapi.annotations.tags.Tag
 import org.jboss.logging.Logger
@@ -26,29 +29,28 @@ class ReportEnergyResource {
   private val log = Logger.getLogger(ReportEnergyReadingUseCase::class.java)
 
   @Inject
-  lateinit var useCase: ReportEnergyReadingUseCase
+  lateinit var bus: EventBus
 
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
-  @Operation(summary = "Receives & registers particular sensor report", )
+  @Operation(summary = "Receives & registers particular sensor report")
   fun reportEnergyReading(sensorReport: ParticularSensorReport, @Context uriInfo: UriInfo): Uni<Response> {
     log.info("Received particular sensor report: $sensorReport")
-    return useCase
-      .reportEnergyReading(
-        DeviceEnergyReport(
-          deviceSn = sensorReport.deviceSN,
-          timestamp = sensorReport.timestamp,
-          energyCounter = sensorReport.energy
-        )
+    return bus.request<EnergyReading>(
+      DeviceEnergyReport::class.java.simpleName,
+      DeviceEnergyReport(
+        deviceSn = sensorReport.deviceSN,
+        timestamp = sensorReport.timestamp,
+        energyCounter = sensorReport.energy
       )
-      .map { registeredReading ->
-        val uriBuilder = uriInfo.absolutePathBuilder
+    )
+      .map { energyReading ->
         Response
-          .created(uriBuilder.path(registeredReading.id.toString()).build())
-          .entity(registeredReading)
+          .status(Response.Status.CREATED)
+          .entity(energyReading.body())
           .build()
       }
-      .onFailure { it is UnacceptableReportException } .recoverWithItem { th ->
+      .onFailure().recoverWithItem { th ->
         Response
           .status(Response.Status.NOT_ACCEPTABLE)
           .entity(mapOf("error" to th.message))
