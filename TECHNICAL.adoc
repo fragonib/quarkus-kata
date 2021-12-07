@@ -6,7 +6,7 @@
 * Kotlin (for production code)
 * Hexagonal architecture
 * Reactive programming model (with non-blocking I/O)
-* Mongo for DB (although decoupled due to hexagonal architecture)
+* Mongo for Sensor Readings repository (decoupled thanks to using hexagonal architecture)
 
 == Focused on
 
@@ -16,7 +16,7 @@
 
 == Requirements
 
-. To have at least JVM 11 to build and run the project
+. At least JVM 11 to build and run the project
 . GraalVM to build native app
 
 == Running
@@ -73,7 +73,7 @@ In this mode you can interact with app http://localhost:8080/q/dev[dev insights]
 
 == Containers
 
-You can build the container image by (make sure you build the app first `./gradlew clean build`)
+You can build the container image by (make sure you build the app first `./gradlew clean build`):
 
 [source,shell]
 ----
@@ -109,10 +109,10 @@ Image use `mongodb://mongodb:27017` hostname, so in local you need manually reso
 
 * Add support for native image
 * Authorization should be used on REST endpoints to guarantee energy reports are coming from trusted sensors
-* Aggregate instrumentation (ie.: _OpenTracing_) to trace complete journey of a message
+* Add trace instrumentation (ie.: _OpenTracing_) to trace complete journey of a message
 * Add business metrics (ie.: with _Micrometer_)
-* Use of https://github.com/lordofthejars/nosql-unit[NoSQLUnit] like framework to drive DB IT
+* Use of https://github.com/lordofthejars/nosql-unit[NoSQLUnit] like framework to drive DB related Integration Tests
 
 == KNOWN errors
 
-No known errors so far.
+Currently, some tests aren't idempotent because they don't clean app state before start
