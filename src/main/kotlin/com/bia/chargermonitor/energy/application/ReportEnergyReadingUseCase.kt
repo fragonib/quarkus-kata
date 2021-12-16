@@ -4,6 +4,7 @@ import com.bia.chargermonitor.energy.model.DeviceEnergyReport
 import com.bia.chargermonitor.energy.model.EnergyReading
 import com.bia.chargermonitor.shared.notNull
 import com.bia.chargermonitor.shared.toUni
+import io.quarkus.vertx.ConsumeEvent
 import io.smallrye.mutiny.Uni
 import javax.enterprise.context.ApplicationScoped
 
@@ -14,6 +15,7 @@ class ReportEnergyReadingUseCase(
   private val energyReadingsRepository: EnergyReadingsRepository
 ) {
 
+  @ConsumeEvent("DeviceEnergyReport")
   fun reportEnergyReading(energyReport: DeviceEnergyReport): Uni<EnergyReading> {
     return deviceRepository.retrieveOrCreateNew(energyReport.deviceSn)
       .flatMap { device ->
