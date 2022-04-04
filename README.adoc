@@ -1,51 +1,142 @@
-== Context
+= Solar monitor kata
 
-A new type of energy meter provides readings from building power lines, and we need to incorporate the data they provide to the system.
+An exercise to practice real problem-solving with Quarkus framework
 
-These devices incorporate a SIM card, open to the Internet, so they can create HTTP requests to send the data.
-They sync their time with any time service so they always have the correct date.
-Also, each device has a unique serial number, so they can send that serial number (sn) along the messages so the readings can be identified.
+== TO DO
 
-The devices send an energy reading (as a home energy meter, a value that always grows) to the server every 30 minutes, with a JSON payload with the following structure:
+You're working on a company that manages solar energy production plants. There are several devices that report energy readings from building power lines, and we need to incorporate the data they provide to the system.
+
+The devices send an energy reading (a value that always grows) periodically:
 
 [source,json]
 ----
 {
-"timestamp": Timestamp,
-"device_sn": String,
-"energy": Number
+  "device": String,
+  "timestamp": Timestamp,
+  "energy": Number
 }
 ----
 
 We need to create a small service that does the following:
 
-. Receives incoming sensor data via HTTP PUT.
-. Computes average power values from energy readings (assume a flawless stream of readings, so power can safely be computed over the device reporting frequency).
+. Receives incoming readings' data via HTTP PUT.
+. Computes average power values from energy readings.
 . Stores the datapoints (records with at least a timestamp, energy and power values).
 . Has an endpoint to get a list of data points from the service, filtered by timestamps and the data source (`GET /api/v1/data-points?start=xxx&end=xxx&device-id=xxx` for example, you can use anything you want).
 
+== Technologies used
+
+* Gradle (for building project)
+* Kotlin (for production code)
+* Hexagonal architecture
+* Reactive programming model (with non-blocking I/O)
+* Mongo for Sensor Readings repository (decoupled thanks to using hexagonal architecture)
+
+== Focused on
+
+* Design patterns
+* SOLID
+* Event oriented design
+
 == Requirements
 
-WHAT NEEDS TO BE DONE:
+. At least JVM 11 to build and run the project
+. GraalVM to build native app
 
-. Implement a basic service providing the aforementioned functionalities.
+== Running
 
-+
-_Refer to the https://github.com/fragonib/charger-monitor/blob/master/TECHNICAL.adoc[technical document]_
+To build the entire app with:
 
-. Just put some comments about the following questions:
-.. Imagine that a second vendor is publishing data of the same nature (i.e., containing a timestamp, energy values and some type of ID, but perhaps with a different structure)
-... What strategy would you follow to accept this new format
-... Potentially, each vendor will send data in a different way.
-How could we design the service/system so that we can include a new schema easily and with little or no downtime when adding it?
-.. In case we would like to stream the processed data via Kafka, what would be a nice strategy to follow?
-(Serialisation, message structure…)
+[source,shell]
+----
+./gradlew clean build
+----
 
-+
-_Refer to the https://github.com/fragonib/charger-monitor/blob/master/Q&A.adoc[resolved questions]_
+To build the entire app but without running any tests:
 
-== NOTES
+[source,shell]
+----
+./gradlew clean build -x test
+----
 
-- You can create a service using any framework you want, and any database, embedded database or in memory data structure for storing data.
-- You can make any assumptions you need to achieve this.
-- We can think about basic auth, so we can add credentials for a certain group of sensors, but there is no need to enforce it in this test, just assume that the gateway already performed all the checks and TLS termination.
+To run all tests, external dependencies (ie: DB engines) are mocked:
+
+[source,shell]
+----
+./gradlew test
+----
+
+To run the entire app (in localhost) in PROD mode:
+
+[source,shell]
+----
+java -jar build/quarkus-app/quarkus-run.jar
+----
+
+[NOTE]
+====
+Requires a running mongo database cluster. You can play with local one:
+
+[source,shell]
+----
+docker run -ti --rm -p 27017:27017 mongo
+----
+====
+
+Once up &amp; running you can check and interact with the REST API using http://localhost:8080/swagger-ui[swagger UI]
+
+
+To run application in DEV mode:
+
+[source,shell]
+----
+./gradlew quarkusDev
+----
+
+In this mode you can interact with app http://localhost:8080/q/dev[dev insights]
+
+== Containers
+
+You can build the container image by (make sure you build the app first `./gradlew clean build`):
+
+[source,shell]
+----
+docker build -f src/main/docker/Dockerfile.jvm -t quarkus/solar-monitor-jvm .
+----
+
+A running mongo database cluster is needed, but you can play with local one:
+
+[source,shell]
+----
+docker run -ti --rm -p 27017:27017 mongo
+----
+
+Then you can run the container local using:
+
+[source,shell]
+----
+docker run -i --net="host" --rm -p 8080:8080 quarkus/solar-monitor-jvm
+----
+
+[NOTE]
+====
+Image use `mongodb://mongodb:27017` hostname, so in local you need manually resolve that IP
+
+./etc/hosts
+[source,shell]
+----
+127.0.0.1       mongodb
+----
+====
+
+== What could be improved?
+
+* Add support for native image
+* Authorization should be used on REST endpoints to guarantee energy reports are coming from trusted sensors
+* Add trace instrumentation (ie.: _OpenTracing_) to trace complete journey of a message
+* Add business metrics (ie.: with _Micrometer_)
+* Use of https://github.com/lordofthejars/nosql-unit[NoSQLUnit] like framework to drive DB related Integration Tests
+
+== KNOWN errors
+
+Currently, some tests aren't idempotent because they don't clean app state before start

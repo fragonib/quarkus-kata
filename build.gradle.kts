@@ -38,7 +38,7 @@ dependencies {
   testImplementation("org.mockito:mockito-junit-jupiter")
 }
 
-group = "com.bia"
+group = "com.solar.production"
 version = "1.0.0-SNAPSHOT"
 
 java {

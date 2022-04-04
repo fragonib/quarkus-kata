@@ -1,12 +1,12 @@
 openapi: 3.1.1
 info:
-  title: Charger Monitor API
-  description: Fruit resources Open API documentation
+  title: Monitor API
+  description: Solar plant monitor OpenAPI
   version: "1.0.0"
   contact:
-    name: Charger Monitor Support
-    url: https://www.biapower.io
-    email: contact@biapower.io
+    name: Monitor Support
+    url: https://www.solar.inc
+    email: contact@solar.inc
 
 servers:
   - url: http://localhost:8080/api
